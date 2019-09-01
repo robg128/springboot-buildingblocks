@@ -1,6 +1,7 @@
 package com.stacksimplify.restservices.services;
 
 import com.stacksimplify.restservices.entities.User;
+import com.stacksimplify.restservices.exceptions.UserExistsException;
 import com.stacksimplify.restservices.exceptions.UserNotFoundException;
 import com.stacksimplify.restservices.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,17 @@ public class UserService {
    }
 
    // Create User Method
-   public User createUser(User user) {
+   public User createUser(User user) throws UserExistsException {
+
+      // check if user exists using username
+      User existingUser = userRepository.findByUsername(user.getUsername());
+      // if exists throw UserExists Exception
+      if (existingUser != null) {
+         throw new UserExistsException("User already exists in repository");
+      }
+
+
+
       return userRepository.save(user);
    }
    // getUserById

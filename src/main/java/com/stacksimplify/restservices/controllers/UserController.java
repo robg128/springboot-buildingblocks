@@ -1,6 +1,7 @@
 package com.stacksimplify.restservices.controllers;
 
 import com.stacksimplify.restservices.entities.User;
+import com.stacksimplify.restservices.exceptions.UserExistsException;
 import com.stacksimplify.restservices.exceptions.UserNotFoundException;
 import com.stacksimplify.restservices.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,12 @@ public class UserController {
    //@PostMapping
    @PostMapping("/users")
    public User createUser(@RequestBody User user) {
-      return userService.createUser(user);
+
+      try {
+         return userService.createUser(user);
+      } catch (UserExistsException ex) {
+         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
+      }
    }
 
 // getUserById
