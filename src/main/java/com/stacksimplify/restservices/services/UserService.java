@@ -4,7 +4,9 @@ import com.stacksimplify.restservices.entities.User;
 import com.stacksimplify.restservices.exceptions.UserNotFoundException;
 import com.stacksimplify.restservices.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -48,10 +50,15 @@ public class UserService {
 
    //deleteUserById
    public void deleteUserById(Long id) {
-      if(userRepository.findById(id).isPresent()) {
+
+      Optional<User> optionalUser = userRepository.findById(id);
+      if(!optionalUser.isPresent()) {
+         throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"User " + id.toString() + " not found in user Respository");
+      }
+
          userRepository.deleteById(id);
 
-      }
+
 
 
    }
